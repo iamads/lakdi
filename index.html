@@ -15,20 +15,27 @@
   </head>
   <body>
     <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
+    <button id="join"> Join Room </button>
+    <button id="create"> Create Room </button>
 <script src="/socket.io/socket.io.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
   $(document).ready(function(){
 		var socket = io();
-		$('form').submit(function(){		  
-		socket.emit('chat message', $('#m').val());
-		$('#m').val('');
-		return false;
-	});
-	socket.on('chat message', function(msg){
+		$('#join').click(function(){	
+	      		var room = prompt("Please enter the room to join");
+			if (room != null ){
+			socket.emit('join room', room);
+			$('#joinroom').val('');
+			return false;
+			}
+		});
+		$('#create').click(function(){
+			socket.emit('create room');
+			return false;
+		});
+
+	socket.on('Created room', function(msg){
 		$('#messages').append($('<li>').text(msg));
 		});
   });
