@@ -14,12 +14,12 @@ io.on('connection', function(socket){
 	socket.on('create room',function(){
 		var room = Math.random() * (999-100) + 100;
 		socket.join(room)
-		io.emit('Created room', room);
+		io.emit('Created room', "Created" + room);
 	});
 
 	socket.on('join room', function(room){
 		socket.join(room);
-		io.emit('Created room', room);
+		io.emit('Created room', "Joined" +  room);
 	})
 });
 
