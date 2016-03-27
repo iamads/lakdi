@@ -5,8 +5,7 @@ var Lakdi = function(sio, gamesocket){
 	io=sio;
 	socket= gamesocket;
 	
-	var createNewGame = function
-gt
+	var createNewGame = function(){}
 }
 
 

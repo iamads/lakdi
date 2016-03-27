@@ -1,9 +1,29 @@
-var app = require('express')()
-var http = require('http').Server(app)
-var io = require('socket.io')(http)
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser')
+var db;
+    if (process.env.ENV == 'Test')
+        db = mongoose.connect('mongodb://localhost/lakdi_test');
+    else
+        db = mongoose.connect('mongodb://localhost/lakdi')
 
-app.get('/', function(req, res){
-	res.sendfile(__dirname + '/index.html');
+var Game = require('./models/gameModel');
+//app.get('/', function(req, res){
+//	res.sendfile(__dirname + '/index.html');
+//});
+
+var port = process.env.PORT || 3000
+app.use(bodyParser.urlenccoded({extended: true}));
+app.use(bodyParser.json());
+
+gameRouter = require('./routes/gameRoutes')(Game);
+
+app.use('/api/game',gameRouter);
+
+app.get('/', function(req,res){
+    res.send("Welcome to Lakdi");
 });
 
 io.on('connection', function(socket){
@@ -23,6 +43,6 @@ io.on('connection', function(socket){
 	})
 });
 
-http.listen(3000, function(){
-	console.log("listening on *:3000");
+http.listen(port, function(){
+	console.log("listening on *:" + port);
 });
