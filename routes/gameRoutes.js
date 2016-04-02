@@ -17,9 +17,40 @@ var routes = function(Game){
            res.status(201).send(game) 
         });          // create a new game return game id and player cards
 
-    gameRouter.route('/:gameId/score')
-        .post()         // set predicted score Only once so use some flag
-        .get();          // get current score in game
+    gameRouter.route('/:gameId/predictedscore')
+        .post(function(req, res){
+               console.log("Inside post"); 
+               Game.findById(req.params.gameId, function(err,game){
+                    if (err)
+                        res.status(500).send(err)
+                    else{
+                        console.log("Found Game" + JSON.stringify(req.body))
+                        for (var player in req.body){
+                            console.log(player);
+                            if (["playerOne","playerTwo","playerThree","playerFour"].indexOf(player) > -1){
+                                console.log("Found player");
+                                game.predictedScore[player] = req.body[player];
+                                game.save(function(err){
+                                    if (err)
+                                       res.status(500).send(err);
+                                    else
+                                       res.status(201).send(game) ;  
+                                })   
+                            }
+                           // else                                              // Not valid the first parameter is not one player then willsend to else which is not wanted. Think of other way to check if one of the player
+                           //     res.status(500).send("Wrong player"); 
+                        }
+                    } 
+                }) 
+            })         // set predicted score Only once so use some flag
+        .get(function(req,res){
+            Game.findById(req.params.gameId, function(err,game){
+                if (err)
+                    res.status(500).send(err)
+                else
+                    res.status(200).send(game.predictedScore)
+            })
+        });          // get urrent score in game
 
     gameRouter.route('/:gameId/:roundNumber/')
         .post()         // Set Players cards
