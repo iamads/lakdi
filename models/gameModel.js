@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var gameModel = new Schema({
-    playerSequence:         {type: Array, degault: ["playerOne","playerTwo","playerThree","playerFour"]},
+    playerSequence:         {type: Array, default: ["playerOne","playerTwo","playerThree","playerFour"]},
     playerType: {
         playerOne:          {type: Boolean, default: false},
         playerTwo:          {type: Boolean, default: false},
@@ -28,6 +28,14 @@ var gameModel = new Schema({
         playerFour:         {type: Number}
     },
     currentRound: {type: Array},
+
 });
+
+gameModel.methods.assign_cards = function(){
+    this.playerCards.playerOne = ["d_6","d_10","d_7","h_7","c_K","s_5","h_5","c_8","h_A","h_9","d_2","c_4","d_8"];
+    this.playerCards.playerTwo = [ "d_3", "d_9", "s_7", "s_4", "h_2", "d_4", "d_K", "c_3", "d_Q", "h_Q", "s_9", "c_10", "c_2"];
+    this.playerCards.playerThree = ["h_6", "h_8", "s_6", "d_J", "h_J", "h_10", "c_J", "s_Q", "c_6", "c_A", "s_8", "s_3", "h_K"];
+    this.playerCards.playerFour = ["s_10", "s_2", "c_9", "s_K", "c_5", "s_J", "h_4", "c_Q", "d_5", "s_A", "c_7", "h_3", "d_A"];
+ }
 
 module.exports = mongoose.model('Game', gameModel);

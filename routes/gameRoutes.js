@@ -8,7 +8,14 @@ var routes = function(Game){
         .get();          // Same here
 
     gameRouter.route('/new')
-        .get();          // create a new game return game id and player cards
+        .get(function(req, res){
+           var game = new Game;
+           // Should shuffle cards and assign it to player
+           game.playerType.playerOne  = true;
+           game.assign_cards();
+           game.save();
+           res.status(201).send(game) 
+        });          // create a new game return game id and player cards
 
     gameRouter.route('/:gameId/score')
         .post()         // set predicted score Only once so use some flag
