@@ -52,9 +52,33 @@ var routes = function(Game){
             })
         });          // get urrent score in game
 
-    gameRouter.route('/:gameId/:roundNumber/')
-        .post()         // Set Players cards
-        .get();         // Get other players card thrown for this round
+    gameRouter.route('/:gameId/round/:roundNumber/')
+        .post(function(req,res){
+            Game.findById(req.params.gameId, function(err,game){
+                if (err)
+                    res.status(500).send(err)
+                else
+                    if (req.params.roundNumber != game.currentRound)
+                        res.status(500).send("Invalid round")
+                    else{
+                        game.rounds[req.params.roundNumber][req.body.player] = req.body.card;       //JSON:{ player: playerOne , card:"h_A"}
+                        game.save;
+                        res.status(200).send(game);
+                    }
+            })
+        })         // Set Players cards
+        .get(function(req,res){
+            Game.findById(req.params.gameId, function(err,game){
+                if (err)
+                    res.status(500).send(err)
+                else{
+                    if (req.params.roundNumber >= game.currentRound)
+                        res.status(500).send("Round didn't even start")
+                    else
+                        res.status(201).send(game.rounds[req.params.roundNumber])
+                }
+            })
+        });         // Get other players card thrown for this round
 
     return gameRouter;
 }
