@@ -13,6 +13,7 @@ var routes = function(Game){
            // Should shuffle cards and assign it to player
            game.playerType.playerOne  = true;
            game.assign_cards();
+           game.set_trump();
            game.save();
            res.status(201).send(game) 
         });          // create a new game return game id and player cards

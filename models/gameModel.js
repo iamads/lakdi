@@ -28,6 +28,7 @@ var gameModel = new Schema({
         playerFour:         {type: Number}
     },
     currentRound:           {type: Number, default: 1 },
+    trump:                  { type: String },
     rounds:                 {
                                 1 : { playerOne: {type: String}, playerTwo: { type: String},
                                     playerThree: { type: String}, playerFour:{ type: String} },
@@ -67,5 +68,9 @@ gameModel.methods.assign_cards = function(){
 
 gameModel.methods.increment_currentRound = function(){
     this.currentRound += 1
+}
+
+gameModel.methods.set_trump = function(){
+    this.trump = "s"            // Setting to spade for now
 }
 module.exports = mongoose.model('Game', gameModel);
