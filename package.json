@@ -14,6 +14,7 @@
     "gulp": "~3.9.1",
     "body-parser": "~1.15.0",
     "mongoose": "~4.4.10",
-    "gulp-nodemon": "~2.0.6"
+    "gulp-nodemon": "~2.0.6",
+    "lodash": "~4.8.1"
   }
 }
