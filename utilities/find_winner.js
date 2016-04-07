@@ -2,7 +2,7 @@ var _ = require('lodash');
 var largest_card_of_suit = require('./largest_card_of_suit')
 
 var find_winner = function(cards, trump){        // to find winner of round
-    if (cards.length == 4){
+    if (cards.length > 0 && cards.length <= 4){
         var round_suit = cards[0][0];
         var trumps = [];
 
