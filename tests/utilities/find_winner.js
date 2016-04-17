@@ -6,7 +6,7 @@ var cards = ['s_A','h_2','s_3','c_2']
 describe("Find winner", function(){
     it ('should return a string', function(done){
         ans = find_winner(cards, 'c')
-        expect(ans).to.be.a(String)
+        expect(ans).to.be.a('string')
         done()
     })
     it ('should return the strongest of round suit if no trump', function(done){
@@ -24,5 +24,10 @@ describe("Find winner", function(){
         expect(ans).to.eql("invalid number of cards");
         done()
     })
-    
+     it ('should return error if zero cards', function(done){
+        ans = find_winner([], 's')
+        expect(ans).to.eql("invalid number of cards");
+        done()
+    })
+
 })
