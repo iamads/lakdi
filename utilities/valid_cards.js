@@ -39,7 +39,11 @@ var valid_cards = function(current_round_cards, my_cards, trump){
             })
             // If you have a round suit card , then you have to throw it
             if (round_suit_cards.length > 0){
-                var greater_than_winning_till_now = _.filter(valid_trumps, function(card){
+                if (winning_till_now[0] == trump){
+                    return round_suit_cards
+                }
+                else{
+                    var greater_than_winning_till_now = _.filter(round_suit_cards, function(card){
                     return priority_table(card.split("_")[1]) > priority_table(winning_till_now.split('_')[1])
                 });
                 
@@ -49,13 +53,29 @@ var valid_cards = function(current_round_cards, my_cards, trump){
                     return greater_than_winning_till_now
                 }
                 else
-                    return rounnd_suit_cards
+                    return round_suit_cards
             }
-            else
-                return my_cards
+            }
+            else{
+                // You have to throw a trump if you have a trump that is greatr than winning_till_now else you are free to throw any
+                var trumps_you_have = _.filter(my_cards, function(card){
+                    return (_.startsWith(card, trump))
+                });
+                if (winning_till_now[0] == trump){
+                    trumps_you_have = _.filter(trumps_you_have, function(card){
+                        return priority_table(card.split("_")[1]) > priority_table(winning_till_now.split('_')[1])
+                    })
+                }
+                if (trumps_you_have.length > 0){
+                    return trumps_you_have
+                }
+                else{
+                    // If your trump is lower than winning_till_now you are free to throw any.
+                    return my_cards
+                }
+            }
             } 
         }
     }
 
-
-
+module.exports = valid_cards
