@@ -15,17 +15,6 @@ var port = process.env.PORT || 3000
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-gameRouter = require('./routes/gameRoutes')(Game);
-
-app.use('/api/game',gameRouter);
-
-//app.get('/', function(req,res){
-//    res.send("Welcome to Lakdi");
-//});
-app.get('/', function(req, res){
-	res.sendfile(__dirname + '/index.html');
-});
-
 io.on('connection', function(socket){
 	console.log('a user connected');
 	socket.on('disconnect', function(){
@@ -41,6 +30,18 @@ io.on('connection', function(socket){
 		io.emit('Created game', "Joined" +  game);
 	})
 });
+
+gameRouter = require('./routes/gameRoutes')(Game, io);
+
+app.use('/api/game',gameRouter);
+
+//app.get('/', function(req,res){
+//    res.send("Welcome to Lakdi");
+//});
+app.get('/', function(req, res){
+	res.sendfile(__dirname + '/index.html');
+});
+
 
 http.listen(port, function(){
 	console.log("listening on *:" + port);

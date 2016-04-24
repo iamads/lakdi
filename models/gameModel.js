@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
+var _ = require('lodash');
 
 var gameModel = new Schema({
     playerSequence:         {type: Array, default: ["playerOne","playerTwo","playerThree","playerFour"]},
@@ -84,4 +85,9 @@ gameModel.methods.increment_playerCount = function(){
 gameModel.methods.set_trump = function(){
     this.trump = "s"            // Setting to spade for now
 }
+
+gameModel.methods.get_player_from_socket_id = function(socket_id){
+    return _.invert(this.playerId)[socket_id];
+}
+
 module.exports = mongoose.model('Game', gameModel);

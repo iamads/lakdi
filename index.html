@@ -45,8 +45,16 @@
 
 	socket.on('Created game', function(msg){
 		$('#messages').append($('<li>').text(msg));
-		});
+	});
+
+  socket.on('predict_score_now', function(game_id){
+      var predicted_score = prompt("Set predicted score");
+      if (predicted_score != null && predicted_score != undefined){
+        $.post("/api/game/"+game_id+"/predictedscore", { playerSocketId: socket.id, predicted_score: predicted_score}, function(data){
+        } );  
+      }
   });
+});
 </script>
   </body>
 </html>

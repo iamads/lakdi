@@ -1,6 +1,6 @@
 var express = require('express');
 
-var routes = function(Game){
+var routes = function(Game, io){
     var gameRouter = express.Router();
     //var gameController = require
     gameRouter.route('/')
@@ -24,7 +24,7 @@ var routes = function(Game){
                 if(err)
                     res.status(500).send(err)
                 else{
-                    switch (playerCount){
+                    switch (game.playerCount){
                         case 0:
                             game.playerId.playerOne = req.body.playerId;
                             game.increment_playerCount()
@@ -48,6 +48,7 @@ var routes = function(Game){
                             game.increment_playerCount()
                             game.save();
                             res.status(200).send(game);
+                            io.emit('predict_score_now', req.body.gameId);
                             break;
                         default:
                             res.status(500).send("Invalid player Count . Game fucked");
@@ -58,27 +59,24 @@ var routes = function(Game){
 
     gameRouter.route('/:gameId/predictedscore')
         .post(function(req, res){
-               console.log("Inside post"); 
-               Game.findById(req.params.gameId, function(err,game){
+               console.log("Inside post");
+               Game.findById(req.params.gameId, function(err,game){// I think it should be request.body. Check it now
                     if (err)
                         res.status(500).send(err)
                     else{
-                        console.log("Found Game" + JSON.stringify(req.body))
-                        for (var player in req.body){
-                            console.log(player);
-                            if (["playerOne","playerTwo","playerThree","playerFour"].indexOf(player) > -1){
-                                console.log("Found player");
-                                game.predictedScore[player] = req.body[player];
-                                game.save(function(err){
-                                    if (err)
-                                       res.status(500).send(err);
-                                    else
-                                       res.status(201).send(game) ;  
-                                })   
-                            }
-                           // else                                              // Not valid the first parameter is not one player then willsend to else which is not wanted. Think of other way to check if one of the player
-                           //     res.status(500).send("Wrong player"); 
+                        var player = game.get_player_from_socket_id(req.body.playerSocketId)
+                        console.log("player", JSON.stringify(player) ) 
+                        if (player != "Socket id not found!" ){
+                            game.predictedScore[player] = req.body.predicted_score;
+                            game.save(function(err){
+                                if (err)
+                                   res.status(500).send(err);
+                                else
+                                   res.status(201).send(game) ;  
+                            })   
                         }
+                       else
+                            res.status(500).send("Who the fuq r u, ur Socket id was not found"); 
                     } 
                 }) 
             })         // set predicted score Only once so use some flag
