@@ -10,9 +10,6 @@ var db;
         db = mongoose.connect('mongodb://localhost/lakdi')
 
 var Game = require('./models/gameModel');
-//app.get('/', function(req, res){
-//	res.sendfile(__dirname + '/index.html');
-//});
 
 var port = process.env.PORT || 3000
 app.use(bodyParser.urlencoded({extended: true}));
@@ -22,8 +19,11 @@ gameRouter = require('./routes/gameRoutes')(Game);
 
 app.use('/api/game',gameRouter);
 
-app.get('/', function(req,res){
-    res.send("Welcome to Lakdi");
+//app.get('/', function(req,res){
+//    res.send("Welcome to Lakdi");
+//});
+app.get('/', function(req, res){
+	res.sendfile(__dirname + '/index.html');
 });
 
 io.on('connection', function(socket){
@@ -31,15 +31,14 @@ io.on('connection', function(socket){
 	socket.on('disconnect', function(){
 		console.log('user disconnected');
 	});
-	socket.on('create room',function(){
-		var room = Math.random() * (999-100) + 100;
-		socket.join(room)
-		io.emit('Created room', "Created" + room);
+	socket.on('create_game',function(game_id){
+		socket.join(game_id)
+		io.emit('Created game', "Created" + game_id);
 	});
 
-	socket.on('join room', function(room){
-		socket.join(room);
-		io.emit('Created room', "Joined" +  room);
+	socket.on('join_game', function(game){
+		socket.join(game);
+		io.emit('Created game', "Joined" +  game);
 	})
 });
 

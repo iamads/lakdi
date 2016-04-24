@@ -3,12 +3,19 @@ var mongoose = require('mongoose'),
 
 var gameModel = new Schema({
     playerSequence:         {type: Array, default: ["playerOne","playerTwo","playerThree","playerFour"]},
-    playerType: {
-        playerOne:          {type: Boolean, default: false},
-        playerTwo:          {type: Boolean, default: false},
-        playerThree:        {type: Boolean, default: false},
-        playerFour:         {type: Boolean, default: false}
-    },
+    playerId:               {
+                                playerOne:      { type: String },
+                                playerTwo:      { type: String },
+                                playerThree:    { type: String },
+                                playerFour:     { type: String }
+                            },
+    playerCount:            { type: Number, default: 0 },
+    playerType:             {
+                                playerOne:          {type: Boolean, default: false},
+                                playerTwo:          {type: Boolean, default: false},
+                                playerThree:        {type: Boolean, default: false},
+                                playerFour:         {type: Boolean, default: false}
+                            },
     playerCards: {
         playerOne:          {type: Array},
         playerTwo:          {type: Array},
@@ -68,6 +75,10 @@ gameModel.methods.assign_cards = function(){
 
 gameModel.methods.increment_currentRound = function(){
     this.currentRound += 1
+}
+
+gameModel.methods.increment_playerCount = function(){
+    this.playerCount += 1
 }
 
 gameModel.methods.set_trump = function(){

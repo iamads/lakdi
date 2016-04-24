@@ -18,6 +18,44 @@ var routes = function(Game){
            res.status(201).send(game) 
         });          // create a new game return game id and player cards
 
+    gameRouter.route('/join')
+        .post(function(req, res){
+            Game.findById(req.body.gameId, function(err,game){
+                if(err)
+                    res.status(500).send(err)
+                else{
+                    switch (playerCount){
+                        case 0:
+                            game.playerId.playerOne = req.body.playerId;
+                            game.increment_playerCount()
+                            game.save();
+                            res.status(200).send(game);
+                            break;
+                        case 1:
+                            game.playerId.playerTwo = req.body.playerId;
+                            game.increment_playerCount()
+                            game.save();
+                            res.status(200).send(game);
+                            break;
+                        case 2:
+                            game.playerId.playerThree = req.body.playerId;
+                            game.increment_playerCount()
+                            game.save();
+                            res.status(200).send(game);
+                            break;
+                        case 3:
+                            game.playerId.playerFour = req.body.playerId;
+                            game.increment_playerCount()
+                            game.save();
+                            res.status(200).send(game);
+                            break;
+                        default:
+                            res.status(500).send("Invalid player Count . Game fucked");
+                    }
+                }
+            })
+        })
+
     gameRouter.route('/:gameId/predictedscore')
         .post(function(req, res){
                console.log("Inside post"); 

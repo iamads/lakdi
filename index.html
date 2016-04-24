@@ -23,19 +23,27 @@
   $(document).ready(function(){
 		var socket = io();
 		$('#join').click(function(){	
-	      		var room = prompt("Please enter the room to join");
-			if (room != null ){
-			socket.emit('join room', room);
-			$('#joinroom').val('');
-			return false;
+	      		var game_id = prompt("Please enter the game id to join");
+			if (game_id != null && game_id != undefined){
+      $.post("api/game/join", { gameId: game_id, playerId: socket.id }, function(data){
+			  socket.emit('join_game', game_id);
+			  $('#joinroom').val('');
+			  return false;
+      });
 			}
 		});
 		$('#create').click(function(){
-			socket.emit('create room');
-			return false;
+      $.getJSON("api/game/new", function(game){
+        console.log("the get was successful");
+        $.post("api/game/join", { gameId: game._id, playerId: socket.id }, function(data){
+          console.log(socket.id);
+			    socket.emit('create_game', game._id);
+			    return false;
+        });
+      });
 		});
 
-	socket.on('Created room', function(msg){
+	socket.on('Created game', function(msg){
 		$('#messages').append($('<li>').text(msg));
 		});
   });
