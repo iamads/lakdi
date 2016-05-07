@@ -90,4 +90,8 @@ gameModel.methods.get_player_from_socket_id = function(socket_id){
     return _.invert(this.playerId)[socket_id];
 }
 
+gameModel.methods.has_everyone_predicted = function(){
+    return (_.isNumber(this.predictedScore.playerOne) && _.isNumber(this.predictedScore.playerTwo) && _.isNumber(this.predictedScore.playerThree) && _.isNumber(this.predictedScore.playerFour));
+}
+
 module.exports = mongoose.model('Game', gameModel);

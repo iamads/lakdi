@@ -1,4 +1,5 @@
 var express = require('express');
+var event_predict_score_now = require('../events/predict_score_now') 
 
 var routes = function(Game, io){
     var gameRouter = express.Router();
@@ -48,7 +49,7 @@ var routes = function(Game, io){
                             game.increment_playerCount()
                             game.save();
                             res.status(200).send(game);
-                            io.emit('predict_score_now', req.body.gameId);
+                            event_predict_score_now(io, req.body.gameId);
                             break;
                         default:
                             res.status(500).send("Invalid player Count . Game fucked");
@@ -71,8 +72,15 @@ var routes = function(Game, io){
                             game.save(function(err){
                                 if (err)
                                    res.status(500).send(err);
-                                else
-                                   res.status(201).send(game) ;  
+                                else{                                //here check if all users have predicted, if yes fire event game_start
+                                                                     //game start will find the first player from player sequence and 
+                                                                    //ask him to make its move
+                                   res.status(201).send(game) ;
+                                   if (game.has_everyone_predicted()){
+                                        event_start_round(); 
+                                   }
+
+                                }
                             })   
                         }
                        else
