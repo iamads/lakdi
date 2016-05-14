@@ -54,6 +54,15 @@
         });  
       }
   });
+
+  socket.on('make_move', function(msg){
+      console.log(msg)
+      prompt(msg);
+  });
+
+  socket.on('error', function(error){
+      console.log("Something fucked :" + error);
+      })
 });
 </script>
   </body>

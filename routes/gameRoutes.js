@@ -1,5 +1,6 @@
 var express = require('express');
 var event_predict_score_now = require('../events/predict_score_now') 
+var event_start_round = require('../events/start_round')
 
 var routes = function(Game, io){
     var gameRouter = express.Router();
@@ -76,8 +77,9 @@ var routes = function(Game, io){
                                                                      //game start will find the first player from player sequence and 
                                                                     //ask him to make its move
                                    res.status(201).send(game) ;
+                                   console.log(game.has_everyone_predicted())
                                    if (game.has_everyone_predicted()){
-                                        event_start_round(); 
+                                        event_start_round(io, req.params.gameId); 
                                    }
 
                                 }
@@ -95,7 +97,7 @@ var routes = function(Game, io){
                 else
                     res.status(200).send(game.predictedScore)
             })
-        });          // get urrent score in game
+        });          // get current score in game
 
     gameRouter.route('/:gameId/round/:roundNumber/')
         .post(function(req,res){
@@ -109,6 +111,9 @@ var routes = function(Game, io){
                         game.rounds[req.params.roundNumber][req.body.player] = req.body.card;       //JSON:{ player: playerOne , card:"h_A"}
                         game.save;
                         res.status(200).send(game);
+                        // If player Sequence index is less than 3 
+                        // send continue round event with index of the
+                        // next player in player sequence
                     }
             })
         })         // Set Players cards

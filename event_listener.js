@@ -12,10 +12,16 @@ var EventSynchronizer = function(sio){
 		io.emit('Created game', "Created" + game_id);
 	});
 
-	socket.on('join_game', function(game){
-		socket.join(game);
-		io.emit('Created game', "Joined" +  game);
+	socket.on('join_game', function(game_id){
+		socket.join(game_id);
+		io.emit('Created game', "Joined" +  game_id);
 	})
+
+    socket.on('disabled', function(msg){
+        console.log('make_mve -> your move : ' + msg),
+        msg = JSON.parse(msg)
+        socket.broadcast.to(msg['socket_id']).emit('your_move', msg)        
+    })
 });
     
 }
