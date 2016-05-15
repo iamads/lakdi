@@ -110,8 +110,12 @@ var routes = function(Game, io){
                     if (req.params.roundNumber != game.currentRound)
                         res.status(500).send("Invalid round")
                     else{
-                        game.rounds[req.params.roundNumber][req.body.player] = req.body.card;       //JSON:{ player: playerOne , card:"h_A"}
-                        game.save;
+                        var player = game.get_player_from_socket_id(req.body.playerSocketId)
+                        console.log(req.params.roundNumber, player, req.body.card);
+                        var round_number = req.params.roundNumber
+                        game.rounds[round_number] = {}
+                        game.rounds[round_number][player] = req.body.card;       //JSON:{ player: playerOne , card:"h_A"}
+                        game.save();
                         res.status(200).send(game);
                         // If player Sequence index is less than 3 
                         // send continue round event with index of the

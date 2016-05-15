@@ -64,7 +64,7 @@ var gameModel = new Schema({
                                     playerThree: { type: String}, playerFour:{ type: String} },
                                 13 : { playerOne: {type: String}, playerTwo: { type: String},
                                     playerThree: { type: String}, playerFour:{ type: String} }
-                                }
+                                , default: {}}
 });
 
 gameModel.methods.assign_cards = function(){

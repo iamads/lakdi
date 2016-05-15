@@ -58,13 +58,23 @@
   socket.on('make_move', function(msg){
       console.log(msg)
       $.getJSON("api/game/" + msg['gameId'] + '/round/' + msg['round_number'] + '?playerSocketId=' + socket.id,function(data){
-          var my_move = prompt("current cards:" + data['current_cards'] + '\n your valid_cards: ' + data['valid_cards']);
+          var my_move = valid_move(data['current_cards'], data['valid_cards']);
+          $.post("api/game/" + msg['gameId'] + '/round/' + msg['round_number'],{playerSocketId: socket.id, card: my_move }, function(data){
+            })
         });
   });
 
   socket.on('error', function(error){
       console.log("Something fucked :" + error);
       })
+
+  var valid_move = function(current_cards, valid_cards){
+    move = prompt("current cards:" + current_cards + '\n your valid_cards: ' + valid_cards);
+    if (valid_cards.indexOf(move) == -1)
+      return valid_move(current_cards, valid_cards);
+    else
+      return move;
+  }
 });
 </script>
   </body>
