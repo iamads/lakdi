@@ -57,7 +57,9 @@
 
   socket.on('make_move', function(msg){
       console.log(msg)
-      prompt(msg);
+      $.getJSON("api/game/" + msg['gameId'] + '/round/' + msg['round_number'] + '?playerSocketId=' + socket.id,function(data){
+          var my_move = prompt("current cards:" + data['current_cards'] + '\n your valid_cards: ' + data['valid_cards']);
+        });
   });
 
   socket.on('error', function(error){

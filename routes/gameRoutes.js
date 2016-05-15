@@ -1,6 +1,8 @@
 var express = require('express');
 var event_predict_score_now = require('../events/predict_score_now') 
 var event_start_round = require('../events/start_round')
+var _ = require('lodash');
+var valid_cards = require('../utilities/valid_cards')
 
 var routes = function(Game, io){
     var gameRouter = express.Router();
@@ -97,7 +99,7 @@ var routes = function(Game, io){
                 else
                     res.status(200).send(game.predictedScore)
             })
-        });          // get current score in game
+        });          // get predicted score in game
 
     gameRouter.route('/:gameId/round/:roundNumber/')
         .post(function(req,res){
@@ -122,13 +124,29 @@ var routes = function(Game, io){
                 if (err)
                     res.status(500).send(err)
                 else{
-                    if (req.params.roundNumber >= game.currentRound)
+                    if (req.params.roundNumber > game.currentRound)
                         res.status(500).send("Round didn't even start")
-                    else
-                        res.status(201).send(game.rounds[req.params.roundNumber])
+                    else{
+                        current_round = game.rounds[req.params.roundNumber]
+                        console.log("current round", JSON.stringify(current_round), current_round, _.isEmpty(game.rounds[current_round]))
+                        var current_cards, my_valid_cards;
+                        var player = game.get_player_from_socket_id(req.query.playerSocketId)
+                        if ( _.isEmpty(game.rounds[current_round]))
+                            current_cards = []
+                        else{
+                            current_cards = []
+                             _.forEach(game.playerSequence, function(key){
+                                if (player in game.rounds[current_round])
+                                    current_cards.push(game.rounds[current_round][player])
+                             }) 
+                        }
+                            my_valid_cards = valid_cards(current_cards, game.playerCards[player], game.trump)
+                        
+                        res.status(201).send(JSON.stringify({current_cards: current_cards, valid_cards: my_valid_cards }))
+                        }
                 }
             })
-        });         // Get other players card thrown for this round
+        });         // Get other players card thrown for this round and your valid cards
 
     return gameRouter;
 }

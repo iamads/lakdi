@@ -4,7 +4,7 @@ var priority_table = require('./priority_table')
 
 var valid_cards = function(current_round_cards, my_cards, trump){
     if (current_round_cards.length == 0){
-       return my_cards.pop()            // my cards is in ascending power. So last element is most powerful
+       return my_cards // if first card can throw any card
     }
     else{
         var round_suit = current_round_cards[0][0];
