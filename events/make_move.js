@@ -5,13 +5,12 @@
 // should then post the card
 //
 var make_move = function(io, socketid, gameId, round_number){
-    var ner =  {
+    var info =  {
         gameId: gameId,
         round_number: round_number,
         socket_id: socketid
     }
-    io.in(socketid).emit('make_move', 'the_fuck')
-    console.log("make move done", socketid)
+    io.in('/#' + socketid).emit('make_move', info);
 }
 
 module.exports = make_move;
