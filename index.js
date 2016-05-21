@@ -15,7 +15,7 @@ var port = process.env.PORT || 3000
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-var event_listener = require('./event_listener')(io);
+var event_listener = require('./event_listener')(io, Game);
 
 gameRouter = require('./routes/gameRoutes')(Game, io);
 

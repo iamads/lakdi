@@ -1,4 +1,5 @@
 var mongoose = require('mongoose'),
+    find_winner = require('../utilities/find_winner')
     Schema = mongoose.Schema;
 var _ = require('lodash');
 
@@ -64,7 +65,22 @@ var gameModel = new Schema({
                                     playerThree: { type: String}, playerFour:{ type: String} },
                                 13 : { playerOne: {type: String}, playerTwo: { type: String},
                                     playerThree: { type: String}, playerFour:{ type: String} }
-                                , default: {}}
+                                , default: {}},
+    round_winner:           {
+                                1 : {type: String},
+                                2 : {type: String},
+                                3 : {type: String},
+                                4 : {type: String},
+                                5 : {type: String},
+                                6 : {type: String},
+                                7 : {type: String},
+                                8 : {type: String},
+                                9 : {type: String},
+                                10 : {type: String},
+                                11 : {type: String},
+                                12 : {type: String},
+                                13 : {type: String},
+                            }
 });
 
 gameModel.methods.assign_cards = function(){
@@ -92,6 +108,22 @@ gameModel.methods.get_player_from_socket_id = function(socket_id){
 
 gameModel.methods.has_everyone_predicted = function(){
     return (_.isNumber(this.predictedScore.playerOne) && _.isNumber(this.predictedScore.playerTwo) && _.isNumber(this.predictedScore.playerThree) && _.isNumber(this.predictedScore.playerFour));
+}
+
+gameModel.methods.find_round_winner = function( round_number){
+   cards_of_round =  [];
+   self = this 
+   _.forEach(self.playerSequence, function(player){
+        cards_of_round.push(self.rounds[round_number][player])
+   })
+   console.log("model", cards_of_round)
+   winning_card = find_winner(cards_of_round, this.trump);
+
+   player_by_cards = _.invert(self.rounds[round_number]) 
+   winner = player_by_cards[winning_card]
+   this.round_winner[round_number] = winner
+   this.save()
+   console.log("Winner: " + winner + "Winning card" + winning_card )
 }
 
 module.exports = mongoose.model('Game', gameModel);
