@@ -122,8 +122,15 @@ gameModel.methods.find_round_winner = function( round_number){
    player_by_cards = _.invert(self.rounds[round_number]) 
    winner = player_by_cards[winning_card]
    this.round_winner[round_number] = winner
+   this.rotate_player_sequence(winner)
    this.save()
    console.log("Winner: " + winner + "Winning card" + winning_card )
 }
 
+gameModel.methods.rotate_player_sequence = function(winner){
+    var playerSequence = this.playerSequence;
+    var new_sequence = _.concat(_.slice(playerSequence, playerSequence.indexOf(winner), 4), _.slice(playerSequence, 0, playerSequence.indexOf(winner)))
+    this.playerSequence = new_sequence
+    this.save()
+}
 module.exports = mongoose.model('Game', gameModel);
