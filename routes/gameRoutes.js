@@ -147,6 +147,16 @@ var routes = function(Game, io){
                 }
             })
         });         // Get other players card thrown for this round and your valid cards
+    gameRouter.route('/:gameId/roundwinner/:roundNumber/')
+        .get(function(req,res){
+            Game.findById(req.params.gameId, function(err,game){
+                if (err)
+                    res.status(500).send(err)
+                else{
+                    res.status(201).send(JSON.stringify({winner: game.round_winner[req.params.roundNumber]})) 
+                }
+            })
+        })
 
     return gameRouter;
 }

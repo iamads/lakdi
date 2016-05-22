@@ -36,7 +36,7 @@ var EventSynchronizer = function(sio, Game){
                 console.log("index: "+ index, "player " + game.get_player_from_socket_id(msg['playerSocketId']))
                 if (index == 3){
                     game.find_round_winner(msg['round_number'])
-                    socket.emit('find_round_winner', msg)
+                    io.emit('find_round_winner', msg)
                 }
                 else{
                     make_move(io,game.playerId[game.playerSequence[index+1]], msg['game_id'],msg['round_number'])

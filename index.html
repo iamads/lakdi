@@ -65,6 +65,12 @@
         });
   });
 
+  socket.on('find_round_winner', function(msg){
+      $.getJSON("api/game/" + msg['game_id'] + '/roundwinner/' + msg['round_number'], function(data){
+          $('#messages').append($('<li>').text(data['winner'] + " won round :" + msg['round_number']));
+      });
+      });
+
   socket.on('error', function(error){
       console.log("Something fucked :" + error);
       })

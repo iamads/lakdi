@@ -31,10 +31,10 @@ var gameModel = new Schema({
         playerFour:         {type: Number}
     },
     currentScore: {
-        playerOne:          {type: Number},
-        playerTwo:          {type: Number},
-        playerThree:        {type: Number},
-        playerFour:         {type: Number}
+        playerOne:          {type: Number, default: 0},
+        playerTwo:          {type: Number, default: 0},
+        playerThree:        {type: Number, default: 0},
+        playerFour:         {type: Number, default: 0}
     },
     currentRound:           {type: Number, default: 1 },
     trump:                  { type: String },
@@ -123,6 +123,7 @@ gameModel.methods.find_round_winner = function( round_number){
    winner = player_by_cards[winning_card]
    this.round_winner[round_number] = winner
    this.rotate_player_sequence(winner)
+   this.currentScore[winner] += 1
    this.save()
    console.log("Winner: " + winner + "Winning card" + winning_card )
 }
