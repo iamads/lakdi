@@ -1,4 +1,5 @@
-var make_move = require('./events/make_move')
+var make_move = require('./events/make_move'),
+    start_round = require('./events/start_round');
 
 var EventSynchronizer = function(sio, Game){
 	var io=sio;
@@ -33,7 +34,6 @@ var EventSynchronizer = function(sio, Game){
                 "Game fucked"
             else{
                 index = game.playerSequence.indexOf(game.get_player_from_socket_id(msg['playerSocketId']))
-                console.log("index: "+ index, "player " + game.get_player_from_socket_id(msg['playerSocketId']))
                 if (index == 3){
                     game.find_round_winner(msg['round_number'])
                     io.emit('find_round_winner', msg)
@@ -43,6 +43,29 @@ var EventSynchronizer = function(sio, Game){
                 }
             }
         }) 
+    })
+
+    socket.on('got_round_winner', function(game_id){
+        Game.findById(game_id, function(err,game){
+            if (err)
+                "Fuck"
+            else{
+                if (game.currentRound != 14){
+                    if (game.got_round_winner  == 3){
+                        start_round(io, game_id)
+                        game.got_round_winner = 0
+                        game.save()
+                    }
+                    else{
+                        game.got_round_winner += 1
+                        game.save()
+                    }
+                }
+                else{
+                    socket.emit('get_final_score');
+                }
+            }
+        })
     })
 });
     

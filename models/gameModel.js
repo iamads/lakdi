@@ -80,7 +80,8 @@ var gameModel = new Schema({
                                 11 : {type: String},
                                 12 : {type: String},
                                 13 : {type: String},
-                            }
+                            },
+    got_round_winner:       { type: Number, default: 0}
 });
 
 gameModel.methods.assign_cards = function(){
@@ -124,6 +125,7 @@ gameModel.methods.find_round_winner = function( round_number){
    this.round_winner[round_number] = winner
    this.rotate_player_sequence(winner)
    this.currentScore[winner] += 1
+   this.currentRound += 1
    this.save()
    console.log("Winner: " + winner + "Winning card" + winning_card )
 }
