@@ -136,4 +136,11 @@ gameModel.methods.rotate_player_sequence = function(winner){
     this.playerSequence = new_sequence
     this.save()
 }
+
+gameModel.methods.remove_card_from_players_deck = function(player, card_to_remove){
+    self = this
+    this.playerCards[player] = _.remove(self.playerCards[player], function(card){
+        return card != card_to_remove
+    })
+}
 module.exports = mongoose.model('Game', gameModel);
