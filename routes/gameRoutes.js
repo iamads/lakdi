@@ -113,7 +113,6 @@ var routes = function(Game, io){
                         var player = game.get_player_from_socket_id(req.body.playerSocketId)
                         console.log(req.params.roundNumber, player, req.body.card);
                         var round_number = req.params.roundNumber
-                        game.rounds[round_number] = {}
                         game.rounds[round_number][player] = req.body.card;       //JSON:{ player: playerOne , card:"h_A"}
                         game.save();
                         res.status(200).send(game);
@@ -132,20 +131,17 @@ var routes = function(Game, io){
                         res.status(500).send("Round didn't even start")
                     else{
                         current_round = game.rounds[req.params.roundNumber]
-                        console.log("current round", JSON.stringify(current_round), current_round, _.isEmpty(game.rounds[current_round]))
                         var current_cards, my_valid_cards;
                         var player = game.get_player_from_socket_id(req.query.playerSocketId)
-                        if ( _.isEmpty(game.rounds[current_round]))
-                            current_cards = []
-                        else{
-                            current_cards = []
+                        var current_cards = [];
+                        if ( game.playerSequence.indexOf(player) != 0){
                              _.forEach(game.playerSequence, function(key){
-                                if (player in game.rounds[current_round])
-                                    current_cards.push(game.rounds[current_round][player])
+                                if (current_round[key] != null && current_round[key] != undefined){
+                                    current_cards.push(current_round[key])
+                                }
                              }) 
                         }
-                            my_valid_cards = valid_cards(current_cards, game.playerCards[player], game.trump)
-                        
+                        my_valid_cards = valid_cards(current_cards, game.playerCards[player], game.trump)
                         res.status(201).send(JSON.stringify({current_cards: current_cards, valid_cards: my_valid_cards }))
                         }
                 }
